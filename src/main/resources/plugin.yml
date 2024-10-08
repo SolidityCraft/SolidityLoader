@@ -1,0 +1,12 @@
+name: SolidityLoader
+version: '${project.version}'
+main: io.soliditycraft.solidityloader.SolidityLoader
+api-version: '1.20'
+load: STARTUP
+authors: [ Solidity Team ]
+description: "Loader for Solidity plugins & addons"
+website: github.com/SolidityCraft
+
+commands:
+  solidity:
+    description: The solidity command for all addons and solidity admin
