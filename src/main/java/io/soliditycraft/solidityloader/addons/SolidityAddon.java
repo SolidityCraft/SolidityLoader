@@ -2,7 +2,12 @@ package io.soliditycraft.solidityloader.addons;
 
 import io.soliditycraft.solidityloader.SolidityLoader;
 import io.soliditycraft.solidityloader.commands.SolidityCommandManager;
+import io.soliditycraft.solidityloader.listener.SolidityListener;
 import lombok.Getter;
+import org.bukkit.Bukkit;
+import org.bukkit.Server;
+import org.bukkit.plugin.PluginManager;
+import org.jetbrains.annotations.NotNull;
 
 @Getter
 public abstract class SolidityAddon {
@@ -32,6 +37,19 @@ public abstract class SolidityAddon {
 
     public SolidityCommandManager getCommandManager() {
         return getLoader().getCommandManager();
+    }
+
+    public void registerListener(@NotNull SolidityListener listener) {
+        listener.initialize(this);
+        getPluginManager().registerEvents(listener, getLoader());
+    }
+
+    public PluginManager getPluginManager() {
+        return getServer().getPluginManager();
+    }
+
+    public Server getServer() {
+        return Bukkit.getServer();
     }
 
     private void setLoader(SolidityLoader loader) {
