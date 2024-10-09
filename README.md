@@ -1,5 +1,8 @@
+<p align="center">
+  <img src="https://github.com/SolidityCraft/Assets/blob/master/SolidityPDN.png?raw=true" width="128" height="128" />  
+</p>
 <h1 align="center">
-SolidityLoader
+  SolidityLoader
 </h1>
 
 SolidityLoader is a multipurpose library for creating spigot Solidity addons that offer great utilities and connectivity
