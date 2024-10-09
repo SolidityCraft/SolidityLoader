@@ -4,6 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.soliditycraft.solidityloader.SolidityLoader;
 import io.soliditycraft.solidityloader.SolidityLogger;
 import lombok.Getter;
+import org.bukkit.Bukkit;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.PluginManager;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -28,9 +31,11 @@ public class SolidityAddonManager {
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final SolidityLoader loader;
     private final SolidityLogger logger = SolidityLogger.getLogger();
+    private final PluginManager pluginManager;
 
     public SolidityAddonManager(SolidityLoader loader) {
         this.loader = loader;
+        pluginManager = Bukkit.getPluginManager();
     }
 
     /**
@@ -54,6 +59,7 @@ public class SolidityAddonManager {
             String id = addonInfo.getAddonId();
             String version = addonInfo.getVersion();
             String mainClassName = addonInfo.getMain();
+            boolean loadPlugin = addonInfo.isLoadPlugin();
 
             if (mainClassName == null) {
                 throw new IllegalArgumentException("The main class is not specified in the addon data.");
@@ -76,6 +82,15 @@ public class SolidityAddonManager {
             addon.initialize(this.loader, addonInfo);
             loadedAddons.put(name, addon);
             addon.onLoad();
+
+            if (loadPlugin) {
+                Plugin plugin = getPluginManager().loadPlugin(jarFile);
+
+                if (plugin != null) {
+                    getPluginManager().enablePlugin(plugin);
+                }
+            }
+
             logger.info("Loaded Solidity Addon: " + name + " (" + id + ") v" + version);
         }
     }
