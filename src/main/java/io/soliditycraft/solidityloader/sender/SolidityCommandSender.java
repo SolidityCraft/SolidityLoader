@@ -91,4 +91,7 @@ public class SolidityCommandSender {
         this.sender.sendMessage(sb + message);
     }
 
+    public boolean hasSolidityPermission(String name) {
+        return hasPermission("solidity." + name);
+    }
 }

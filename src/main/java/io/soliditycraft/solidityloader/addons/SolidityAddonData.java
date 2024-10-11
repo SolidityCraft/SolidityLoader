@@ -8,6 +8,6 @@ public class SolidityAddonData {
     private String version;
     private String description;
     private String main;
-    private String addonId;
+    private String id;
     private boolean loadPlugin;
 }

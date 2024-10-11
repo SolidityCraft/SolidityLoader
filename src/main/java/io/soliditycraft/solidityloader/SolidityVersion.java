@@ -8,4 +8,7 @@ public class SolidityVersion {
         return VERSION.equals("DEV");
     }
 
+    public static String getVersion() {
+        return isDevelopment() ? "Development" : VERSION;
+    }
 }

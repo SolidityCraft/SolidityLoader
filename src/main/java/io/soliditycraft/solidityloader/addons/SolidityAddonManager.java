@@ -56,13 +56,13 @@ public class SolidityAddonManager {
             InputStream inputStream = jar.getInputStream(entry);
             SolidityAddonData addonInfo = objectMapper.readValue(inputStream, SolidityAddonData.class);
             String name = addonInfo.getName();
-            String id = addonInfo.getAddonId();
             String version = addonInfo.getVersion();
+            String id = addonInfo.getId();
             String mainClassName = addonInfo.getMain();
             boolean loadPlugin = addonInfo.isLoadPlugin();
 
-            if (mainClassName == null) {
-                throw new IllegalArgumentException("The main class is not specified in the addon data.");
+            if (mainClassName == null || name == null || version == null || id == null) {
+                throw new IllegalArgumentException("The addon data provided within the addon jar is corrupted. Please check: " + jarFile.getName());
             }
 
             URL jarUrl = jarFile.toURI().toURL();
@@ -73,13 +73,9 @@ public class SolidityAddonManager {
                 throw new IllegalArgumentException("The main class does not extend SolidityAddon: " + mainClassName);
             }
 
-            AddonVerifier addonIdAnnotation = mainClass.getAnnotation(AddonVerifier.class);
-            if (addonIdAnnotation == null || !addonIdAnnotation.addonId().equals(name)) {
-                throw new IllegalArgumentException("Addon ID in class does not match the one in the JSON file.");
-            }
-
             SolidityAddon addon = (SolidityAddon) mainClass.getDeclaredConstructor().newInstance();
-            addon.initialize(this.loader, addonInfo);
+            File addonDataFolder = new File(SolidityLoader.SOLIDITY_ADDON_FOLDER, id);
+            addon.initialize(this.loader, addonInfo, addonDataFolder);
             loadedAddons.put(name, addon);
             addon.onLoad();
 
@@ -92,6 +88,15 @@ public class SolidityAddonManager {
             }
 
             logger.info("Loaded Solidity Addon: " + name + " (" + id + ") v" + version);
+        }
+    }
+
+    public void unloadAddon(String name) {
+        if (!loadedAddons.containsKey(name)) return;
+        SolidityAddon addon = loadedAddons.remove(name);
+        if (enabledAddons.containsKey(name)) enabledAddons.remove(name);
+        if (addon != null) {
+            addon.onDisable();
         }
     }
 
@@ -112,8 +117,7 @@ public class SolidityAddonManager {
                 try {
                     loadAddon(jarFile);
                 } catch (Exception e) {
-                    System.err.println("Failed to load addon from JAR: " + jarFile.getName());
-                    e.printStackTrace();
+                    getLogger().error("Unable to load Addon due to: \n" + e);
                 }
             }
         }
@@ -136,15 +140,6 @@ public class SolidityAddonManager {
      */
     public SolidityAddon getAddon(String name) {
         return loadedAddons.get(name);
-    }
-
-    /**
-     * Returns a map of all loaded addons, keyed by their names.
-     *
-     * @return A map containing all loaded addons.
-     */
-    public Map<String, SolidityAddon> getLoadedAddons() {
-        return loadedAddons;
     }
 
     /**
@@ -180,13 +175,21 @@ public class SolidityAddonManager {
      * Enables all loaded addons, allowing them to perform their functionality.
      */
     public void enableAllAddons() {
-        loadedAddons.keySet().forEach(this::enableAddon);
+        for (SolidityAddon addon : this.enabledAddons.values()) {
+            this.enableAddon(addon.getInfo().getName());
+        }
     }
 
     /**
      * Disables all currently enabled addons, preventing them from performing any further functionality.
      */
     public void disableAllAddons() {
-        enabledAddons.keySet().forEach(this::disableAddon);
+        for (SolidityAddon addon : this.enabledAddons.values()) {
+            this.disableAddon(addon.getInfo().getName());
+        }
+    }
+
+    public boolean isLoaded(String addonName) {
+        return loadedAddons.containsKey(addonName);
     }
 }

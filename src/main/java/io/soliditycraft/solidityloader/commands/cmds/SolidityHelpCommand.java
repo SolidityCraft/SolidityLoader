@@ -3,6 +3,7 @@ package io.soliditycraft.solidityloader.commands.cmds;
 import io.soliditycraft.solidityloader.commands.ISolidityCMDExecutor;
 import io.soliditycraft.solidityloader.commands.SolidityCommand;
 import io.soliditycraft.solidityloader.sender.SolidityCommandSender;
+import io.soliditycraft.solidityloader.utils.PaginationHelper;
 import io.soliditycraft.solidityloader.utils.SolUtils;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -13,23 +14,10 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-/**
- * Represents a command that shows help information for all registered commands in the Solidity system.
- * This class extends the SolidityCommand base class and provides an implementation for the onExecute method,
- * which handles pagination of the command list.
- */
 public class SolidityHelpCommand extends SolidityCommand {
 
-    private static final int COMMANDS_PER_PAGE = 5;  // Number of commands to display per page
+    private static final int COMMANDS_PER_PAGE = 5;
 
-    /**
-     * Executes the help command and paginates the list of commands based on the provided arguments.
-     *
-     * @param sender  The sender of the command (e.g., a player or console).
-     * @param command The command executor interface.
-     * @param args    The list of arguments passed to the command.
-     * @return true if the command was executed successfully, false otherwise.
-     */
     @Override
     public boolean onExecute(SolidityCommandSender sender, ISolidityCMDExecutor command, @NotNull List<String> args) {
         List<SolidityCommand> commands = SolUtils.filter(getCommands(), (v) -> v.getPermission() == null || sender.hasPermission(v.getPermission()));
@@ -38,7 +26,8 @@ public class SolidityHelpCommand extends SolidityCommand {
                 (v) -> "&6> - &5/solidity " + v.getName() + " " + v.getArgumentsUsage() + " &e| &6" + v.getDescription()
         );
 
-        int totalPages = (int) Math.ceil((double) cmds.size() / COMMANDS_PER_PAGE);
+        PaginationHelper<String> paginator = new PaginationHelper<>(cmds, COMMANDS_PER_PAGE);
+        int totalPages = paginator.getTotalPages();
 
         int page = 1;
         if (!args.isEmpty()) {
@@ -54,14 +43,13 @@ public class SolidityHelpCommand extends SolidityCommand {
             }
         }
 
-        int startIndex = (page - 1) * COMMANDS_PER_PAGE;
-        int endIndex = Math.min(startIndex + COMMANDS_PER_PAGE, cmds.size());
+        List<String> pageCommands = paginator.getPage(page);
 
         sender.sendMessage("&e&m" + " ".repeat(40));  // Adds a strikethrough line for visual separation
-
         sender.sendCenteredMessage("&6Help: Page " + page + " of " + totalPages);
-        for (int i = startIndex; i < endIndex; i++) {
-            sender.sendMessage(cmds.get(i));
+
+        for (String cmd : pageCommands) {
+            sender.sendMessage(cmd);
         }
 
         TextComponent previousPage = new TextComponent("<< Previous");
@@ -91,24 +79,11 @@ public class SolidityHelpCommand extends SolidityCommand {
         return true;
     }
 
-    /**
-     * Provides tab completion suggestions for this command.
-     *
-     * @param sender  The sender of the command.
-     * @param command The command executor interface.
-     * @param args    The list of arguments passed to the command.
-     * @return A list of possible tab completions, or null if none.
-     */
     @Override
     public List<String> onTabComplete(SolidityCommandSender sender, ISolidityCMDExecutor command, List<String> args) {
         return null;
     }
 
-    /**
-     * Gets the name of this command.
-     *
-     * @return The name of the command, which is typically used to register or execute the command.
-     */
     @Override
     public String getName() {
         return "help";

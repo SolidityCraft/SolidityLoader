@@ -2,6 +2,7 @@ package io.soliditycraft.solidityloader.commands;
 
 import io.soliditycraft.solidityloader.SolidityLoader;
 import io.soliditycraft.solidityloader.commands.cmds.BaseSolidityCommand;
+import io.soliditycraft.solidityloader.commands.cmds.SolidityAddonsCommand;
 import io.soliditycraft.solidityloader.commands.cmds.SolidityHelpCommand;
 import io.soliditycraft.solidityloader.commands.cmds.SolidityReloadConfigs;
 import io.soliditycraft.solidityloader.utils.SolUtils;
@@ -42,5 +43,6 @@ public class SolidityCommandManager {
     public void loadDefaultCommands() {
         this.registerCommand(new SolidityHelpCommand());
         this.registerCommand(new SolidityReloadConfigs());
+        this.registerCommand(new SolidityAddonsCommand());
     }
 }

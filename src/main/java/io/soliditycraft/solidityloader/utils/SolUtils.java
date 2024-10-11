@@ -4,9 +4,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.function.Function;
 
 public class SolUtils {
@@ -43,5 +41,13 @@ public class SolUtils {
         return mappedList;
     }
 
+    @Contract(value = " -> new", pure = true)
+    public static <T> @NotNull List<T> createEmptyList() {
+        return new ArrayList<>();
+    }
 
+    @Contract(value = " -> new", pure = true)
+    public static <K, V> @NotNull Map<K, V> createEmptyMap() {
+        return new HashMap<>();
+    }
 }

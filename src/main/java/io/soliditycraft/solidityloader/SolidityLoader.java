@@ -11,6 +11,8 @@ import java.io.File;
 public final class SolidityLoader extends JavaPlugin {
 
     public static File SOLIDITY_ADDON_FOLDER;
+    @Getter
+    private static SolidityLoader instance;
 
     /* - */
     private final SolidityLogger slogger = SolidityLogger.getLogger();
@@ -19,6 +21,7 @@ public final class SolidityLoader extends JavaPlugin {
 
     @Override
     public void onLoad() {
+        instance = this;
         slogger.line(64);
         slogger.info("&6> &5Solidity &6version: " + getDescription().getVersion());
         saveDefaultConfig();
@@ -45,7 +48,7 @@ public final class SolidityLoader extends JavaPlugin {
         slogger.info("&5Solidity &6has been enabled successfully!");
         slogger.empty();
         slogger.info("&6> Solidity has loaded addons successfully and has successfully enabled them!");
-        slogger.info("&6> Currently you are using &5Solidity &6" + (SolidityVersion.isDevelopment() ? "Development" : "Free") + " version.");
+        slogger.info("&6> Currently you are using &5Solidity &6v" + SolidityVersion.getVersion());
         slogger.line(64);
 
     }

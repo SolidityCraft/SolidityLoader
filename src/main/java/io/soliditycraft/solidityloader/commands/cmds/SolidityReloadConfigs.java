@@ -34,6 +34,6 @@ public class SolidityReloadConfigs extends SolidityCommand {
 
     @Override
     public String getPermission() {
-        return "solidity.reload";
+        return "reload";
     }
 }

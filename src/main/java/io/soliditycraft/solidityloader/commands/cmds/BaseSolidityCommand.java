@@ -48,7 +48,7 @@ public class BaseSolidityCommand implements ISolidityCMDExecutor {
         }
 
         if (cmd.getPermission() != null) {
-            if (!commandSender.hasPermission(cmd.getPermission())) {
+            if (!commandSender.hasSolidityPermission(cmd.getPermission()) || !commandSender.hasSolidityPermission("*")) {
                 commandSender.sendSolidityMessage(Constants.NO_PERMISSIONS);
                 return false;
             }
