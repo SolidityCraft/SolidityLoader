@@ -7,9 +7,14 @@ import io.soliditycraft.solidityloader.commands.cmds.SolidityHelpCommand;
 import io.soliditycraft.solidityloader.commands.cmds.SolidityReloadConfigs;
 import io.soliditycraft.solidityloader.utils.SolUtils;
 import lombok.Getter;
+import org.bukkit.Bukkit;
+import org.bukkit.command.CommandMap;
 import org.bukkit.command.PluginCommand;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.plugin.SimplePluginManager;
 import org.jetbrains.annotations.NotNull;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,6 +43,26 @@ public class SolidityCommandManager {
         assert command != null;
         command.setExecutor(baseSolidityCommand);
         command.setTabCompleter(baseSolidityCommand);
+    }
+
+    public void registerGlobalCommand(SolidityGlobalCommand command) {
+
+        SolidityLoader.getInstance().reloadConfig();
+        FileConfiguration configuration = SolidityLoader.getInstance().getConfig();
+        boolean registerGlobalCommands = configuration.getBoolean("registering_global_commands", true);
+
+        if (!registerGlobalCommands) return; // Disables global command registering through the configuration.
+
+        try {
+            command.initialize();
+            Field commandMapField = SimplePluginManager.class.getDeclaredField("commandMap");
+            commandMapField.setAccessible(true);
+            CommandMap commandMap = (CommandMap) commandMapField.get(Bukkit.getServer().getPluginManager());
+
+            commandMap.register(SolidityLoader.getInstance().getName(), command);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void loadDefaultCommands() {

@@ -5,7 +5,8 @@ import io.soliditycraft.solidityloader.SolidityLogger;
 import io.soliditycraft.solidityloader.commands.SolidityCommand;
 import io.soliditycraft.solidityloader.commands.SolidityCommandManager;
 import io.soliditycraft.solidityloader.configuration.SolidityAddonConfiguration;
-import io.soliditycraft.solidityloader.listener.SolidityListener;
+import io.soliditycraft.solidityloader.listener.SolidityAddonListener;
+import io.soliditycraft.solidityloader.listener.SolidityListenerManager;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
@@ -53,9 +54,8 @@ public abstract class SolidityAddon {
         return getLoader().getCommandManager();
     }
 
-    public void registerListener(@NotNull SolidityListener listener) {
-        listener.initialize(this);
-        getPluginManager().registerEvents(listener, getLoader());
+    public void registerListener(@NotNull SolidityAddonListener listener) {
+        SolidityListenerManager.register(listener, this);
     }
 
     public void registerCommand(SolidityCommand command) {

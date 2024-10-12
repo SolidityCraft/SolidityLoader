@@ -1,6 +1,7 @@
 package io.soliditycraft.solidityloader;
 
 import io.soliditycraft.solidityloader.addons.SolidityAddonManager;
+import io.soliditycraft.solidityloader.api.Solidity;
 import io.soliditycraft.solidityloader.commands.SolidityCommandManager;
 import lombok.Getter;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -32,6 +33,7 @@ public final class SolidityLoader extends JavaPlugin {
         addonManager = new SolidityAddonManager(this);
         commandManager = new SolidityCommandManager(this);
         slogger.line(64);
+        Solidity.initialize(this);
     }
 
     @Override

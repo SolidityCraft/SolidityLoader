@@ -18,3 +18,5 @@
 ########################################################################################
 
 config-version: 1
+
+registering_global_commands: true # Either disables or enables global command registering by the addons.
