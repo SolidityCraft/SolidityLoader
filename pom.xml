@@ -6,7 +6,7 @@
 
     <groupId>io.soliditycraft</groupId>
     <artifactId>SolidityLoader</artifactId>
-    <version>1.0.0-B002</version>
+    <version>1.0.1</version>
     <packaging>jar</packaging>
 
     <name>SolidityLoader</name>
@@ -77,7 +77,8 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>2.14.0</version> <!-- Use the latest version -->
+            <version>2.14.0</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.jetbrains</groupId>
@@ -85,23 +86,23 @@
             <version>24.1.0</version>
             <scope>compile</scope>
         </dependency>
-        <!-- HikariCP for connection pooling -->
         <dependency>
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>
             <version>5.0.1</version>
+            <scope>compile</scope>
         </dependency>
-        <!-- MySQL Connector (or any other JDBC driver) -->
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>8.0.26</version>
+            <version>8.0.28</version>
+            <scope>compile</scope>
         </dependency>
-        <!-- JSON library for handling JSONObjects and JSONArrays -->
         <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
-            <version>20210307</version>
+            <version>20231013</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 </project>

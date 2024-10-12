@@ -1,5 +1,5 @@
 name: SolidityLoader
-version: '1.0.0-B003'
+version: '1.0.1'
 main: io.soliditycraft.solidityloader.SolidityLoader
 api-version: '1.20'
 load: STARTUP
